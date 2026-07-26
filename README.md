@@ -1,4 +1,4 @@
-# 🗂️ Image Sorter & Duplicate Finder
+# 🗂️ Media Sorter Pro
 
 A smart, cross-platform media organization tool that sorts your images, videos, and audio files by chronological timelines or GPS locations, while seamlessly detecting and handling duplicates.
 
@@ -10,14 +10,18 @@ A smart, cross-platform media organization tool that sorts your images, videos, 
 
 ## ✨ Features
 
+- **🔍 Preview / Dry Run Mode**: See exactly what *would* happen before a single file is moved. A rich, color-coded preview window lists every planned operation (Sort ✅, Duplicate 🔁, Skip ⏭). Click "Proceed" to launch the real sort instantly.
+- **⚡ Optional Multi-threaded Hashing**: Enable parallel hash computation to dramatically speed up duplicate detection on large libraries. Uses up to 8 CPU threads simultaneously.
+- **💾 Remembers Your Folders**: The app automatically saves and restores your last used source and output folders — no need to re-select them every session.
+- **📁 Folder Stats at a Glance**: After selecting a source folder, the app instantly shows you the file count and total size (e.g. *1,247 files • 4.2 GB*).
 - **Smart Chronological Sorting**: Automatically organizes files into folders by Year and Month. It extracts precise creation dates directly from internal EXIF metadata (for images) or filesystem dates (for videos and audio).
 - **Location Geocoding**: Option to sort images into location-based folders (e.g. `2026/07_July/Paris/`) using GPS coordinates embedded in EXIF data and completely offline reverse-geocoding.
 - **Unified Media Tree**: Choose to combine photos and videos taken on the same day into the exact same folder, or keep them strictly separated into "Images" and "Videos" directories.
-- **Intelligent Duplicate Detection**: Employs visual perceptual AI hashing (`imagehash`) for images and MD5 fingerprinting for videos/audio to catch duplicates, even if their filenames or metadata have changed.
+- **Intelligent Duplicate Detection**: Employs visual perceptual AI hashing (`imagehash`) for images and SHA-256 fingerprinting for videos/audio to catch duplicates, even if their filenames or metadata have changed.
 - **Quality-Based Deduplication**: When a duplicate is detected, the app automatically compares them and guarantees the highest-resolution or least-compressed version is kept as the definitive "Original". Lower-quality versions are gracefully moved to a dedicated `Duplicates/` folder.
-- **Interactive Duplicate Manager**: A sleek, non-blocking post-sorting interface that lets you review duplicates side-by-side with the original file, preview thumbnails dynamically in the background, and manually delete them in bulk.
-- **Live Console Logging**: A real-time built-in terminal window that shows you exactly what the application is doing under the hood, file by file.
-- **Stunning "Pro" UI**: A dark-mode, responsive, two-column interface built with CustomTkinter for a premium native look and feel.
+- **Interactive Duplicate Manager**: A sleek, non-blocking post-sorting interface that lets you review duplicates side-by-side. Shows **real image thumbnails** and even **video frame previews** (via ffmpeg). Delete duplicates in bulk with one click.
+- **Live Console Logging**: A real-time built-in terminal window shows you exactly what the application is doing under the hood, file by file. Clear it anytime with the Clear Log button.
+- **Premium Dark/Light UI**: A modern, responsive, two-column interface built with CustomTkinter. Toggle between dark and light mode from the header with one click.
 - **Native HEIC Support**: Fully supports Apple HEIC/HEIF images across all platforms out-of-the-box.
 
 ---
@@ -28,7 +32,7 @@ If you are on Windows and prefer not to install Python, you can simply download 
 
 1. Go to the **Releases** page of this GitHub repository.
 2. Download the latest `.exe` file.
-3. Double-click the file to launch the Graphical User Interface (GUI)—no installation required!
+3. Double-click the file to launch the Graphical User Interface (GUI) — no installation required!
 
 ---
 
@@ -38,12 +42,13 @@ To run the application from its source code on any operating system, follow thes
 
 ### Prerequisites
 - [Python 3.8+](https://www.python.org/downloads/) installed on your system.
+- [ffmpeg](https://ffmpeg.org/download.html) installed and available on your system PATH (required for video thumbnails in the Duplicate Manager).
 - `git` installed (optional, but recommended).
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/image_sorter.git
-cd image_sorter
+git clone https://github.com/DonDavis-vibe/Media-Sorter-Duplicate-finder.git
+cd Media-Sorter-Duplicate-finder
 ```
 
 ### 2. Install dependencies
@@ -63,21 +68,24 @@ python main.py
 ## 🖥️ How to Use the App
 
 Once the GUI is open:
-1. **Source Directory**: Select the messy folder containing your raw, unsorted media.
-2. **Target Directory**: Select an empty folder where you want your clean, organized timeline to be built.
+
+1. **Source Directory**: Click **Browse Source** to select the messy folder containing your raw, unsorted media. The app will instantly display the file count and total size.
+2. **Target Directory**: Click **Browse Output** to select an empty folder where your clean, organized timeline will be built.
 3. **Media Types**: Check the boxes for what you want to process (Images, Videos, Audio). Anything unchecked will be ignored.
-4. **Sort by Month**: When enabled, files are grouped like `2026/07_July`. When disabled, they are grouped purely by year (`2026`).
-5. **Include Location in Path**: Organizes images as `Year/Month/Location` based on GPS data.
-6. **Unified Tree**: Combines all media types into the same timeline folders.
-7. **Delete Originals**: If checked, files will be *moved* from the Source Directory rather than *copied*. **Use with caution!**
-8. Click **Start Sorting**. 
-9. After the progress bar finishes, the **Duplicate Manager** will automatically open if any duplicates were found, allowing you to review and delete them safely.
+4. **Sorting Structure**: Choose between *Year and Month* or *Year Only* grouping. Optionally enable **Geocoding** to sort by GPS location.
+5. **Advanced Options**:
+   - **⚡ Multi-threaded Hashing** — Enable for faster processing on large libraries (hundreds to thousands of files).
+   - **🔍 Preview Mode** — Enable this first to get a risk-free preview of every planned operation before committing.
+   - **Move Files** — If checked, files are *moved* (deleted from source) rather than *copied*. **Use with caution!**
+6. Click **▶ Start Sorting**.
+   - If **Preview Mode** is on, a preview window opens. Review the plan, then click **▶ Proceed with Sort** to run it for real.
+7. After sorting completes, the **Duplicate Manager** automatically opens if duplicates were found, letting you review and delete them safely.
 
 ---
 
 ## 📦 Compiling Your Own Executable
 
-You can use PyInstaller to compile this Python script into a standalone executable app for your own operating system. This is great for sharing the app with friends or running it without opening a terminal.
+You can use PyInstaller to compile this Python script into a standalone executable for your own operating system.
 
 ### Windows
 Simply run the included batch script:
@@ -91,9 +99,9 @@ Run the included bash script. You may need to make it executable first:
 chmod +x build.sh
 ./build.sh
 ```
-*(On macOS, this will generate a `.app` bundle inside the `dist/` directory that you can move to your Applications folder).*
+*(On macOS, this will generate a `.app` bundle inside the `dist/` directory that you can move to your Applications folder.)*
 
 ---
 
 ## 📄 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
