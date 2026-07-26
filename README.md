@@ -15,7 +15,9 @@ A smart, cross-platform media organization tool that sorts your images, videos, 
 - **Unified Media Tree**: Choose to combine photos and videos taken on the same day into the exact same folder, or keep them strictly separated into "Images" and "Videos" directories.
 - **Intelligent Duplicate Detection**: Employs visual perceptual AI hashing (`imagehash`) for images and MD5 fingerprinting for videos/audio to catch duplicates, even if their filenames or metadata have changed.
 - **Quality-Based Deduplication**: When a duplicate is detected, the app automatically compares them and guarantees the highest-resolution or least-compressed version is kept as the definitive "Original". Lower-quality versions are gracefully moved to a dedicated `Duplicates/` folder.
-- **Interactive Duplicate Manager**: A sleek post-sorting interface that lets you review duplicates side-by-side with the original file, preview thumbnails, and manually delete them in bulk.
+- **Interactive Duplicate Manager**: A sleek, non-blocking post-sorting interface that lets you review duplicates side-by-side with the original file, preview thumbnails dynamically in the background, and manually delete them in bulk.
+- **Live Console Logging**: A real-time built-in terminal window that shows you exactly what the application is doing under the hood, file by file.
+- **Stunning "Pro" UI**: A dark-mode, responsive, two-column interface built with CustomTkinter for a premium native look and feel.
 - **Native HEIC Support**: Fully supports Apple HEIC/HEIF images across all platforms out-of-the-box.
 
 ---

@@ -179,7 +179,7 @@ def copy_file_with_progress(src, dst, callback=None, abort_flag=None):
                 
     shutil.copystat(src, dst)
 
-def process_images(source_dir, target_dir, sort_by_month=True, progress_callback=None, abort_flag=None, copy_unsupported=False, unified_tree=False, sort_by_location=False, location_format="Year/Month/Location", delete_originals=False, file_progress_callback=None, process_images_flag=True, process_videos_flag=True, process_audio_flag=True):
+def process_images(source_dir, target_dir, sort_by_month=True, progress_callback=None, abort_flag=None, copy_unsupported=False, unified_tree=False, sort_by_location=False, location_format="Year/Month/Location", delete_originals=False, file_progress_callback=None, process_images_flag=True, process_videos_flag=True, process_audio_flag=True, log_callback=None):
     seen_image_hashes = [] # List of dicts: {"hash": img_hash, "path": dest_path}
     seen_video_hashes = {}
     seen_audio_hashes = {}
@@ -198,6 +198,12 @@ def process_images(source_dir, target_dir, sort_by_month=True, progress_callback
         'duplicate_pairs': []
     }
     
+    def log(msg):
+        if log_callback:
+            log_callback(msg)
+            
+    log(f"Scanning source directory: {source_dir}")
+    
     # Gather files
     for root, _, files in os.walk(source_dir):
         for file in files:
@@ -207,9 +213,11 @@ def process_images(source_dir, target_dir, sort_by_month=True, progress_callback
     if total_files == 0:
         if progress_callback:
             progress_callback(1.0, "No media found.", "00:00:00", "00:00:00")
+        log("No media files found to process.")
         return stats
         
     start_time = time.time()
+    log(f"Found {total_files} files to process.")
         
     for index, file_path in enumerate(files_to_process):
         if abort_flag and abort_flag():
@@ -217,6 +225,7 @@ def process_images(source_dir, target_dir, sort_by_month=True, progress_callback
                 elapsed = time.time() - start_time
                 elapsed_str = time.strftime('%H:%M:%S', time.gmtime(elapsed))
                 progress_callback((index) / total_files, "Sorting Aborted.", elapsed_str, "N/A")
+            log("Process aborted by user.")
             break
             
         ext = os.path.splitext(file_path)[1].lower()
@@ -249,15 +258,19 @@ def process_images(source_dir, target_dir, sort_by_month=True, progress_callback
                     counter += 1
                 
                 try:
+                    log(f"Copying unsupported file: {filename} -> Unsupported/")
                     copy_file_with_progress(file_path, dest_path, file_progress_callback, abort_flag)
                     stats['unsupported_copied'] += 1
                     if delete_originals:
                         os.remove(file_path)
+                        log(f"Deleted original: {filename}")
                 except Exception as e:
                     stats['failed'] += 1
                     stats['failed_files'].append(f"{filename}: {str(e)}")
+                    log(f"Error copying unsupported file {filename}: {str(e)}")
             else:
                 stats['skipped_files'] += 1
+                log(f"Skipped unsupported file: {filename}")
         else:
             is_duplicate = False
             original_info = None
@@ -297,6 +310,7 @@ def process_images(source_dir, target_dir, sort_by_month=True, progress_callback
             if is_duplicate and not is_better:
                 dest_folder = os.path.join(target_dir, "Duplicates")
                 stats['duplicates'] += 1
+                log(f"Found lower-quality duplicate: {filename} (Moved to Duplicates/)")
             else:
                 if unified_tree:
                     base_folder = target_dir
@@ -341,6 +355,7 @@ def process_images(source_dir, target_dir, sort_by_month=True, progress_callback
                 copy_file_with_progress(file_path, dest_path, file_progress_callback, abort_flag)
                 if is_duplicate:
                     if is_better:
+                        log(f"Found higher-quality duplicate: {filename}. Replacing previous original.")
                         dup_dest_folder = os.path.join(target_dir, "Duplicates")
                         os.makedirs(dup_dest_folder, exist_ok=True)
                         old_path = original_info["path"]
@@ -368,6 +383,7 @@ def process_images(source_dir, target_dir, sort_by_month=True, progress_callback
                     else:
                         stats['duplicate_pairs'].append((original_info["path"], dest_path))
                 else:
+                    log(f"Sorted: {filename} -> {os.path.relpath(dest_path, target_dir)}")
                     if is_video:
                         stats['videos_sorted'] += 1
                         if f_hash is not None:
@@ -382,9 +398,11 @@ def process_images(source_dir, target_dir, sort_by_month=True, progress_callback
                             seen_image_hashes.append({"hash": img_hash, "path": dest_path, "pixels": pixels, "size": file_size})
                 if delete_originals:
                     os.remove(file_path)
+                    log(f"Deleted original file from source: {filename}")
             except Exception as e:
                 stats['failed'] += 1
                 stats['failed_files'].append(f"{filename}: {str(e)}")
+                log(f"Error processing {filename}: {str(e)}")
             
         if progress_callback:
             progress = (index + 1) / total_files
@@ -403,5 +421,6 @@ def process_images(source_dir, target_dir, sort_by_month=True, progress_callback
         total_elapsed = time.time() - start_time
         elapsed_str = time.strftime('%H:%M:%S', time.gmtime(total_elapsed))
         progress_callback(1.0, "Finished processing all media!", elapsed_str, "00:00:00")
+        log("Process completed successfully.")
         
     return stats
