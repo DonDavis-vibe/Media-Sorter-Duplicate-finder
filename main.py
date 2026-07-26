@@ -239,7 +239,7 @@ class App(ctk.CTk):
         self.file_progress_bar.pack(fill="x", pady=5)
         self.file_progress_bar.set(0)
         
-        self.file_timer_label = ctk.CTkLabel(progress_frame, text="", font=ctk.CTkFont(size=11, text_color="gray"))
+        self.file_timer_label = ctk.CTkLabel(progress_frame, text="", font=ctk.CTkFont(size=11), text_color="gray")
         self.file_timer_label.pack()
         
         # Action Buttons
