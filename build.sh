@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Starting PyInstaller build for Image Sorter..."
-echo "Make sure you have installed requirements with: pip install -r requirements.txt"
+echo "Make sure you have installed requirements with: pip install -r requirements.txt && pip install -r requirements-dev.txt"
 echo "---"
 
 # Remove old builds

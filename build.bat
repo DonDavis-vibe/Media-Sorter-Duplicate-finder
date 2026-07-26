@@ -6,6 +6,7 @@ del /q ImageSorter.spec
 echo.
 echo Installing dependencies...
 python -m pip install -r requirements.txt
+python -m pip install -r requirements-dev.txt
 echo.
 echo Building executable with PyInstaller...
 "C:\Users\t-cla\AppData\Roaming\Python\Python312\Scripts\pyinstaller.exe" --noconfirm --onedir --windowed --name "ImageSorter" --collect-data reverse_geocoder "main.py"
