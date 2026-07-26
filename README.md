@@ -28,11 +28,14 @@ A smart, cross-platform media organization tool that sorts your images, videos, 
 
 ## 🚀 Quick Start for Windows
 
-If you are on Windows and prefer not to install Python, you can simply download the standalone executable:
+If you are on Windows and prefer not to install Python, you can compile a standalone `.exe` yourself in seconds using the included build script:
 
-1. Go to the **Releases** page of this GitHub repository.
-2. Download the latest `.exe` file.
-3. Double-click the file to launch the Graphical User Interface (GUI) — no installation required!
+1. Make sure [Python 3.8+](https://www.python.org/downloads/) is installed.
+2. Open a terminal in the project folder and run:
+   ```cmd
+   build.bat
+   ```
+3. The compiled app will appear in the `dist\ImageSorter\` folder — double-click `ImageSorter.exe` to launch it, no Python required!
 
 ---
 
