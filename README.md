@@ -80,20 +80,18 @@ Once the GUI is open:
 You can use PyInstaller to compile this Python script into a standalone executable app for your own operating system. This is great for sharing the app with friends or running it without opening a terminal.
 
 ### Windows
+Simply run the included batch script:
 ```cmd
-pyinstaller --noconfirm --onedir --windowed --name "ImageSorter" --collect-data reverse_geocoder "main.py"
+build.bat
 ```
 
-### macOS
+### macOS and Linux
+Run the included bash script. You may need to make it executable first:
 ```bash
-pyinstaller --noconfirm --onedir --windowed --name "ImageSorter" --collect-data reverse_geocoder "main.py"
+chmod +x build.sh
+./build.sh
 ```
 *(On macOS, this will generate a `.app` bundle inside the `dist/` directory that you can move to your Applications folder).*
-
-### Linux
-```bash
-pyinstaller --noconfirm --onedir --windowed --name "ImageSorter" --collect-data reverse_geocoder "main.py"
-```
 
 ---
 
