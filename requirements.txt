@@ -2,7 +2,6 @@ customtkinter
 Pillow
 imagehash
 pillow-heif
-pyinstaller
 reverse_geocoder
 tinytag
 hachoir
