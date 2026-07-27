@@ -2,6 +2,7 @@ import os
 import shutil
 import hashlib
 import time
+import logging
 from datetime import datetime
 from PIL import Image, ExifTags
 import imagehash
@@ -14,6 +15,10 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Register HEIF opener to support HEIC/HEIF files
 register_heif_opener()
+
+# Suppress noisy warnings from hachoir and tinytag parsers
+logging.getLogger('hachoir').setLevel(logging.CRITICAL)
+logging.getLogger('tinytag').setLevel(logging.CRITICAL)
 
 SUPPORTED_IMAGES = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.heic', '.heif', '.tiff', '.webp'}
 SUPPORTED_VIDEOS = {'.mp4', '.mov', '.avi', '.mkv', '.webm', '.flv', '.wmv'}

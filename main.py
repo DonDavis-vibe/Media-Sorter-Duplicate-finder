@@ -244,9 +244,10 @@ class DuplicateManagerWindow(ctk.CTkToplevel):
         # ── Image thumbnail ───────────────────────────────────────────────────
         if ext in {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp', '.heic', '.heif'}:
             try:
-                img = Image.open(path)
-                img.thumbnail((150, 150))
-                return ctk.CTkImage(light_image=img, dark_image=img, size=img.size)
+                with Image.open(path) as img:
+                    img.thumbnail((150, 150))
+                    img_copy = img.copy()  # Load pixels into memory → releases file handle immediately
+                return ctk.CTkImage(light_image=img_copy, dark_image=img_copy, size=img_copy.size)
             except Exception:
                 return "[Image Error]"
 
